@@ -1,0 +1,47 @@
+# ==========================================
+# 1. ROS 2 / Colcon (NUNCA SUBIR)
+# ==========================================
+build/
+install/
+log/
+.colcon/
+
+# ==========================================
+# 2. C++ (Binarios y archivos de objeto)
+# ==========================================
+*.o
+*.so
+*.a
+*.lib
+*.dylib
+*.dll
+*.exe
+# Archivos generados por CMake si se corre fuera de colcon
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# ==========================================
+# 3. Python y Entorno
+# ==========================================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# ==========================================
+# 4. Simulación (Gazebo Harmonic)
+# ==========================================
+.gz/
+.ignition/
+*.log
+
+# ==========================================
+# 5. IDEs y Sistema
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+*.swp
