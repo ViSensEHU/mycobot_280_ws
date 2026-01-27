@@ -46,5 +46,7 @@ WORKDIR /home/$USERNAME/erobotics_ws
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/sistemas/.bashrc && \
     echo 'if [ -f "/home/sistemas/erobotics_ws/install/setup.bash" ]; then source "/home/sistemas/erobotics_ws/install/setup.bash"; fi' >> /home/sistemas/.bashrc
 
+RUN echo 'export QT_QPA_PLATFORM=xcb' >> /home/sistemas/.bashrc
+
 CMD ["bash"]
 

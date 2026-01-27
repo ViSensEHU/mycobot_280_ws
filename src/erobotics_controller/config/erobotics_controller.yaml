@@ -25,6 +25,14 @@ arm_controller:
     state_interfaces:
       - position
       - velocity
+
+    gains:
+      joint2_to_joint1: {p: 10000.0, i: 10.0, d: 50.0}
+      joint3_to_joint2: {p: 10000.0, i: 10.0, d: 50.0}
+      joint4_to_joint3: {p: 8000.0,  i: 10.0, d: 30.0}
+      joint5_to_joint4: {p: 5000.0,  i: 10.0, d: 10.0}
+      joint6_to_joint5: {p: 5000.0,  i: 10.0, d: 5.0}
+      joint6output_to_joint6: {p: 300.0, i: 0.0, d: 2.0}
     # state_publish_rate: 100.0
     # action_monitor_rate: 20.0
     # allow_partial_joints_goal: false

@@ -8,7 +8,7 @@
   <!-- Propiedades globales -->
   <xacro:property name="mesh_path" value="package://erobotics_description/meshes" />
   <xacro:property name="width" value=".2" />
-  <xacro:property name="default_mass" value="0.1" />
+  <xacro:property name="default_mass" value="0.01" />
 
   <!-- Incluir configuración de Gazebo y el archivo de la Pinza -->
   <xacro:include filename="erobotics_ros2_control.xacro" />
