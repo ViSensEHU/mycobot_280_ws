@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y \
     ros-jazzy-moveit-setup-assistant \
     python3-lark \
     python3-pip \
+    && pip3 install --no-cache-dir pymycobot --upgrade --break-system-packages \ 
     && rm -rf /var/lib/apt/lists/*
 
 # 5. Configurar el entorno de trabajo
