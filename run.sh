@@ -16,7 +16,8 @@ sudo docker run -it --rm \
     --network host \
     --privileged \
     --device /dev/dri:/dev/dri \
-    --device /dev/ttyACM0:/dev/ttyACM0 \
+    --device /dev/ttyACM*:/dev/ttyACM* \
+    --device /dev/ttyUSB*:/dev/ttyUSB* \
     --group-add video \
     --env="DISPLAY=$DISPLAY" \
     --env="QT_X11_NO_MITSHM=1" \

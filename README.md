@@ -1,154 +1,154 @@
 # 🤖 Erobotics Workspace
 
-Control del MyCobot 280 con ROS 2
+MyCobot 280 Control with ROS 2
 
-Este repositorio contiene un workspace de ROS 2 Jazzy configurado para controlar el brazo robótico **MyCobot 280** (versión M5) de Elephant Robotics.
+This repository contains a ROS 2 workspace configured to control the **MyCobot 280** robotic arm (M5/Arduino version) from Elephant Robotics.
 
-El proyecto integra **MoveIt 2** para la planificación de movimientos y un **Driver personalizado en Python** que comunica ROS 2 con el hardware real mediante la librería `pymycobot`aunque de momento da problemas de saturación de comandos en el puerto serie.
+The project integrates **MoveIt 2** for motion planning and a **custom Python driver** that bridges ROS 2 with the real hardware through the `pymycobot` library, solving serial command saturation issues.
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Sobre el Robot](#sobre-el-robot)
-- [Requisitos](#requisitos)
-- [Instalación con Docker](#instalación-con-docker)
-- [Ejecución](#ejecución)
-- [Limitaciones Actuales](#limitaciones-actuales)
-- [Estructura del Repositorio](#estructura-del-repositorio)
-- [Recursos](#recursos)
+- [About the Robot](#about-the-robot)
+- [Requirements](#requirements)
+- [Docker Installation](#docker-installation)
+- [Running](#running)
+- [Current Limitations](#current-limitations)
+- [Repository Structure](#repository-structure)
+- [Resources](#resources)
 
 ---
 
-## Sobre el Robot
+## About the Robot
 
-Este proyecto está diseñado para el **MyCobot 280**, un brazo robótico colaborativo de **6 grados de libertad (DoF)**.
+This project is designed for the **MyCobot 280**, a collaborative robot arm with **6 degrees of freedom (DoF)**.
 
-| Propiedad | Valor |
+| Property | Value |
 |-----------|-------|
-| Fabricante | Elephant Robotics |
-| Modelo | MyCobot 280 M5/Arduino |
+| Manufacturer | Elephant Robotics |
+| Model | MyCobot 280 M5/Arduino |
 | DoF | 6 |
-| Repositorio Oficial | [mycobot_ros2](https://github.com/elephantrobotics/mycobot_ros2) |
-| Documentación | [Gitbook MyCobot](https://docs.elephantrobotics.com/docs/mycobot280/) |
+| Official Repository | [mycobot_ros2](https://github.com/elephantrobotics/mycobot_ros2) |
+| Documentation | [MyCobot Gitbook](https://docs.elephantrobotics.com/docs/mycobot280/) |
 
 ---
 
-## Requisitos
+## Requirements
 
 ### Hardware
-- **Ordenador anfitrión** con Linux
-- **Robot MyCobot 280** conectado por USB (típicamente `/dev/ttyUSB0` o `/dev/ttyACM0`)
-- Permisos de acceso a puertos USB
+- **Host computer** running Linux
+- **MyCobot 280** connected via USB (typically `/dev/ttyUSB0` or `/dev/ttyACM0`)
+- USB device permissions
 
 ### Software
-- **Docker** instalado y configurado
-- Permisos de ejecución (o acceso a sudo)
+- **Docker** installed and configured
+- Execution permissions (or sudo access)
 
 ---
 
-## Instalación con Docker
+## Docker Installation
 
-> ℹ️ Se recomienda usar Docker para garantizar que todas las dependencias de ROS 2 (Jazzy) y librerías de Python estén correctamente instaladas sin afectar tu sistema anfitrión.
+> ℹ️ Docker is recommended to ensure all ROS 2 (Jazzy/Humble) dependencies and Python libraries are properly installed without affecting your host system.
 
-### Paso 1: Construir la Imagen
+### Step 1: Build the Image
 
 ```bash
-docker build -t <image_name> .
+docker build -t erobotics_image .
 ```
 
-### Paso 2: Ejecutar el Contenedor
+### Step 2: Run the Container
 
-Se incluye un script de utilidad `run.sh` que configura automáticamente:
-- Permisos gráficos (para visualizar RViz)
-- Montaje de dispositivos USB y ACM
-- Variables de entorno necesarias
+A helper script `run.sh` is included to automatically configure:
+- Graphics permissions (for RViz)
+- USB device mounting
+- Required environment variables
 
 ```bash
-# Dar permisos de ejecución (primera ejecución)
+# Grant execute permissions (first run)
 chmod +x run.sh
 
-# Ejecutar el contenedor
+# Run the container
 ./run.sh
 ```
 
-Te encontrarás en una terminal dentro del contenedor lista para ejecutar comandos de ROS 2. El source se hace automáticamente
+You will land in a terminal inside the container, ready to run ROS 2 commands.
 
 ---
 
-## Ejecución
+## Running
 
-El sistema se divide en **dos componentes** que deben ejecutarse en terminales separadas (dentro del Docker):
+The system is divided into **two components** that must run in separate terminals (inside Docker):
 
-1. **Driver**: Comunica con el hardware vía puerto serie
-2. **MoveIt + RViz**: Planifica movimientos y visualización
+1. **Driver**: Communicates with the hardware via serial port
+2. **MoveIt + RViz**: Motion planning and visualization
 
-### Terminal 1: Lanzar el Driver de Hardware
+### Terminal 1: Start the Hardware Driver
 
 ```bash
 ros2 launch erobotics_driver driver.launch.py
 ```
 
-**Descripción:**
-- Conecta con el robot vía puerto serie
-- Expone la interfaz `FollowJointTrajectory`
+**Description:**
+- Connects to the robot via serial port
+- Exposes the `FollowJointTrajectory` interface
 
-**Éxito esperado:** Log mostrando puerto detectado y mensaje "Driver Listo"
+**Expected success:** Log showing the detected port and "Driver Ready"
 
-### Terminal 2: Lanzar MoveIt y RViz
+### Terminal 2: Start MoveIt and RViz
 
 ```bash
 ros2 launch erobotics_moveit demo.launch.py
 ```
 
-**Uso en RViz:**
+**RViz usage:**
 
-1. **Configurar destino:** Arrastra la esfera azul ("Target") a la posición deseada del efector final
-2. **Planificar:** Haz clic en **"Plan"** (MoveIt calcula la trayectoria)
-3. **Ejecutar:** Haz clic en **"Execute"** (el robot real se mueve)
+1. **Set target:** Drag the blue sphere ("Target") to the desired end-effector position
+2. **Plan:** Click **"Plan"** (MoveIt computes the trajectory)
+3. **Execute:** Click **"Execute"** (the real robot moves)
 
 ---
 
-## Limitaciones Actuales
+## Current Limitations
 
-### Problema
+### Problem
 
-El microcontrolador del MyCobot 280 tiene **limitaciones de ancho de banda** en la comunicación serie. El robot no puede procesar trayectorias densas (cientos de puntos) a alta velocidad sin:
-- Saturarse
-- Moverse con saltos discontinuos
+The MyCobot 280 microcontroller has **bandwidth limitations** over serial communication. The robot cannot process dense trajectories (hundreds of points) at high speed without:
+- Saturating
+- Moving in jerky steps
 
-### Solución Implementada: "Modo Directo"
+### Implemented Solution: "Direct Mode"
 
-El controlador `erobotics_interface.py` implementa una estrategia **Punto a Punto**:
+The `erobotics_interface.py` controller implements a **Point-to-Point** strategy:
 
 ```
-Trayectoria completa (MoveIt)
+Full trajectory (MoveIt)
          ↓
-  Ignora puntos intermedios
+  Ignore intermediate points
          ↓
-  Extrae punto final (Meta)
+  Extract final point (Goal)
          ↓
-  Envía comando único al robot
+  Send a single command to the robot
 ```
 
-**Ventajas:**
-- ✅ **Movimiento fluido:** El robot gestiona su propia aceleración interna
-- ✅ **Linealidad en espacio de juntas:** Todos los motores se mueven simultáneamente
+**Advantages:**
+- ✅ **Smooth motion:** The robot manages its own internal acceleration
+- ✅ **Joint-space linearity:** All motors move simultaneously
 
-**Limitaciones:**
-- ⚠️ **No sigue trayectoria planificada:** Mueve todos los motores a la vez (no sigue curva de MoveIt)
-- ⚠️ **No evita obstáculos en trayecto:** Solo planifica el punto inicial y final
-- ✅ **Ideal para:** Aplicaciones simples de "Pick and Place" sin obstáculos intermedios
+**Limitations:**
+- ⚠️ **Does not follow planned path:** All motors move at once (ignores MoveIt curve)
+- ⚠️ **Does not avoid obstacles during motion:** Only considers start and end points
+- ✅ **Ideal for:** Simple "Pick and Place" tasks without intermediate obstacles
 
-### Casos de Uso Recomendados
+### Recommended Use Cases
 
-| Aplicación | Recomendado | Motivo |
+| Application | Recommended | Reason |
 |-----------|:---:|--------|
-| Pick & Place simple | ✅ | Trayectoria A → B directa |
-| Tareas con obstáculos | ❌ | Ignora curva planificada |
-| Trayectorias complejas | ❌ | Satura el puerto serie |
+| Simple Pick & Place | ✅ | Direct A → B motion |
+| Tasks with obstacles | ❌ | Ignores planned curve |
+| Complex trajectories | ❌ | Saturates serial port |
 
 ---
 
-## Estructura del Repositorio
+## Repository Structure
 
 ```
 erobotics_ws/
@@ -158,43 +158,46 @@ erobotics_ws/
 │   ├── erobotics_description/     # URDF/Xacro + mallas 3D
 │   ├── erobotics_moveit/          # Configuración MoveIt Setup Assistant
 │   └── erobotics_controller/      # Configuraciones de controladores ROS 2
-├── build/                         # Artefactos compilados (colcon)
-├── install/                       # Archivos instalados
-├── log/                           # Logs de construcción
-├── Dockerfile                     # Definición de imagen Docker
-├── run.sh                         # Script de ejecución Docker
-└── README.md                      # Este archivo
+├── build/                         # Build artifacts (colcon)
+├── install/                       # Installed files
+├── log/                           # Build logs
+├── Dockerfile                     # Docker image definition
+├── run.sh                         # Docker run script
+└── README.md                      # This file
 ```
 
-### Paquetes Principales
+### Main Packages
 
-| Paquete | Descripción |
+| Package | Description |
 |---------|-------------|
-| `erobotics_driver` | Script Python que actúa como puente entre ROS 2 y `pymycobot` |
-| `erobotics_description` | Archivos URDF/Xacro y mallas (meshes) 3D del robot |
-| `erobotics_moveit` | Configuración generada por MoveIt Setup Assistant |
-| `erobotics_controller` | Configuraciones adicionales de controladores ROS 2 |
+| `erobotics_driver` | Python script bridging ROS 2 and `pymycobot` |
+| `erobotics_description` | URDF/Xacro files and 3D meshes of the robot |
+| `erobotics_moveit` | Configuration generated by MoveIt Setup Assistant |
+| `erobotics_controller` | Additional ROS 2 controller configurations |
 
 ---
 
-## Recursos
+## Resources
 
-### Enlaces Útiles
+### Useful Links
 
-- 📚 [Documentación oficial MyCobot](https://docs.elephantrobotics.com/docs/mycobot280/)
-- 🔗 [Repositorio mycobot_ros2](https://github.com/elephantrobotics/mycobot_ros2)
-- 📦 [pymycobot en PyPI](https://pypi.org/project/pymycobot/)
+- 📚 [Official MyCobot Documentation](https://docs.elephantrobotics.com/docs/mycobot280/)
+- 🔗 [mycobot_ros2 Repository](https://github.com/elephantrobotics/mycobot_ros2)
+- 📦 [pymycobot on PyPI](https://pypi.org/project/pymycobot/)
 - 🎯 [MoveIt 2 Documentation](https://moveit.ros.org/documentation/getting_started/)
 
 ### Troubleshooting
 
-**El robot no se conecta:**
-- Verifica que el dispositivo USB está en `/dev/ttyUSB0` o `/dev/ttyACM0`
-- Comprueba permisos: `ls -la /dev/ttyUSB0`
-- Si usas Docker, verifica que `run.sh` monta el dispositivo correctamente
+**Robot won’t connect:**
+- Verify the USB device is at `/dev/ttyUSB0` or `/dev/ttyACM0`
+- Check permissions: `ls -la /dev/ttyUSB0`
+- If using Docker, verify `run.sh` mounts the device correctly
 
-**RViz no aparece:**
-- Asegúrate de que ejecutaste `./run.sh` (configura permisos gráficos)
-- Verifica variables de entorno: `echo $DISPLAY`
+**RViz does not appear:**
+- Make sure you ran `./run.sh` (configures graphics permissions)
+- Verify environment variables: `echo $DISPLAY`
 
 ---
+
+> **Last update:** January 2026  
+> **License:** Check the `LICENSE` file for more information
