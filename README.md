@@ -1,4 +1,4 @@
-# 🤖 Erobotics Workspace HOla
+# 🤖 Erobotics Workspace
 
 MyCobot 280 Control with ROS 2
 
