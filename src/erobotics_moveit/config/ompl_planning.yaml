@@ -1,0 +1,6 @@
+# En moveit_config/config/ompl_planning.yaml
+planner_configs:
+  AnyName:
+    # Aumentar esto reduce la cantidad de puntos intermedios.
+    # 0.05 significa que los puntos pueden estar separados por el 5% del rango de la articulación.
+    longest_valid_segment_fraction: 0.05
