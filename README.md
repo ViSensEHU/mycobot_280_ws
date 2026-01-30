@@ -198,6 +198,3 @@ erobotics_ws/
 - Verifica variables de entorno: `echo $DISPLAY`
 
 ---
-
-> **Última actualización:** Enero 2026  
-> **Licencia:** Revisa el archivo `LICENSE` para más información
