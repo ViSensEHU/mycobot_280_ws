@@ -2,9 +2,9 @@
 
 Control del MyCobot 280 con ROS 2
 
-Este repositorio contiene un espacio de trabajo (workspace) de ROS 2 configurado para controlar el brazo robótico **MyCobot 280** (versión M5/Arduino) de Elephant Robotics.
+Este repositorio contiene un workspace de ROS 2 Jazzy configurado para controlar el brazo robótico **MyCobot 280** (versión M5) de Elephant Robotics.
 
-El proyecto integra **MoveIt 2** para la planificación de movimientos y un **Driver personalizado en Python** que comunica ROS 2 con el hardware real mediante la librería `pymycobot`, solucionando problemas de saturación de comandos en el puerto serie.
+El proyecto integra **MoveIt 2** para la planificación de movimientos y un **Driver personalizado en Python** que comunica ROS 2 con el hardware real mediante la librería `pymycobot`aunque de momento da problemas de saturación de comandos en el puerto serie.
 
 ## Tabla de Contenidos
 
@@ -47,19 +47,19 @@ Este proyecto está diseñado para el **MyCobot 280**, un brazo robótico colabo
 
 ## Instalación con Docker
 
-> ℹ️ Se recomienda usar Docker para garantizar que todas las dependencias de ROS 2 (Jazzy/Humble) y librerías de Python estén correctamente instaladas sin afectar tu sistema anfitrión.
+> ℹ️ Se recomienda usar Docker para garantizar que todas las dependencias de ROS 2 (Jazzy) y librerías de Python estén correctamente instaladas sin afectar tu sistema anfitrión.
 
 ### Paso 1: Construir la Imagen
 
 ```bash
-docker build -t erobotics_image .
+docker build -t <image_name> .
 ```
 
 ### Paso 2: Ejecutar el Contenedor
 
 Se incluye un script de utilidad `run.sh` que configura automáticamente:
 - Permisos gráficos (para visualizar RViz)
-- Montaje de dispositivos USB
+- Montaje de dispositivos USB y ACM
 - Variables de entorno necesarias
 
 ```bash
@@ -70,7 +70,7 @@ chmod +x run.sh
 ./run.sh
 ```
 
-Te encontrarás en una terminal dentro del contenedor lista para ejecutar comandos de ROS 2.
+Te encontrarás en una terminal dentro del contenedor lista para ejecutar comandos de ROS 2. El source se hace automáticamente
 
 ---
 
