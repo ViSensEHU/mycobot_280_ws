@@ -2,7 +2,7 @@
 
 MyCobot 280 Control with ROS 2
 
-This repository contains a ROS 2 workspace configured to control the **MyCobot 280** robotic arm (M5/Arduino version) from Elephant Robotics.
+This repository contains a ROS 2 Jazzy workspace configured to control the **MyCobot 280** robotic arm (M5/Arduino version) from Elephant Robotics.
 
 The project integrates **MoveIt 2** for motion planning and a **custom Python driver** that bridges ROS 2 with the real hardware through the `pymycobot` library, solving serial command saturation issues.
 
@@ -96,7 +96,7 @@ ros2 launch erobotics_driver driver.launch.py
 ### Terminal 2: Start MoveIt and RViz
 
 ```bash
-ros2 launch erobotics_moveit demo.launch.py
+ros2 launch erobotics_moveit moveit.launch.py
 ```
 
 **RViz usage:**
